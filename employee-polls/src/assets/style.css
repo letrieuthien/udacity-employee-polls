@@ -1,0 +1,22 @@
+.nav-link {
+    position: relative;
+    font-weight: bold;
+    color: black;
+}
+.nav-link:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -5px;
+    height: 2px;
+    width: 0;
+    background: dodgerblue;
+    transition: width .35s ease-in-out;
+}
+.nav-link:hover, .nav-link.active {
+    color: dodgerblue;
+}
+.nav-link:hover:before, .nav-link.active:before {
+    width: 100%;
+}
