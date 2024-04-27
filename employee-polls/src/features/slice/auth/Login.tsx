@@ -8,12 +8,12 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import {getUserList} from "../../../utils/_DATA";
+import { getUserList } from "../../../utils/_DATA";
 import { useAppDispatch } from "../../store";
-import {User} from "../../models/User";
-import {fetchQuestions} from "../questions/questionsSlice";
-import {login} from "./authSlice";
-import banner from '../../../assets/banner.png';
+import { User } from "../../models/User";
+import { fetchQuestions } from "../questions/questionsSlice";
+import { login } from "./authSlice";
+import banner from "../../../assets/banner.png";
 
 const defaultTheme = createTheme();
 
@@ -25,6 +25,9 @@ interface IFormInput {
 const Login = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const redirect = searchParams.get("redirect");
   const {
     handleSubmit,
     formState: { errors },
@@ -43,7 +46,7 @@ const Login = () => {
     const getUser = (await getUserList()) as Record<string, User>;
 
     const findUser: User | undefined = Object.values(getUser).find(
-      (gU) => gU.id === data.id && gU.password === data.password
+      (gU) => gU.id === data.id && gU.password === data.password,
     );
 
     if (findUser && findUser.id && findUser.password) {
@@ -57,7 +60,7 @@ const Login = () => {
 
       dispatch(login(fUser));
       dispatch(fetchQuestions());
-      navigate(state?.path || "/");
+      navigate(state?.path || redirect);
     } else {
       setError("root.wrongUsr", {
         type: "invalidUsrOrPwd",
@@ -83,8 +86,12 @@ const Login = () => {
               alignItems: "center",
             }}
           >
-            <img src={banner} alt={'banner'}/>
-            <Typography variant="h5" sx={{  marginTop: 2, fontWeight: 'bold' }} gutterBottom>
+            <img src={banner} alt={"banner"} />
+            <Typography
+              variant="h5"
+              sx={{ marginTop: 2, fontWeight: "bold" }}
+              gutterBottom
+            >
               Log In
             </Typography>
             <Box
@@ -103,7 +110,7 @@ const Login = () => {
                   <TextField
                     {...field}
                     margin="normal"
-                    style = {{width: 450}}
+                    style={{ width: 450 }}
                     id="id"
                     data-testname="id"
                     label="User name"
@@ -139,7 +146,7 @@ const Login = () => {
                     {...field}
                     margin="normal"
                     required
-                    style = {{width: 450}}
+                    style={{ width: 450 }}
                     label="Password"
                     type="password"
                     id="password"
@@ -164,11 +171,7 @@ const Login = () => {
                 </FormHelperText>
               ) : null}
 
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
+              <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
                 Submit
               </Button>
             </Box>

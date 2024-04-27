@@ -1,18 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Box, Container } from "@mui/material";
+import { Box, Container, Tab, Tabs } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import QuestionList from "../../components/Questions/QuestionList";
 import { selectIsLoggedIn } from "../../features/slice/auth/authSlice";
 import CssBaseline from "@mui/material/CssBaseline";
-import Typography from "@mui/material/Typography";
 import Loading from "../../components/Loading";
-import {RootState} from "../../features/store";
+import { RootState } from "../../features/store";
 
 const Home = () => {
   const defaultTheme = createTheme();
   const isUserLoggedIn = useSelector(selectIsLoggedIn);
   const loading = useSelector((state: RootState) => state.users.loading);
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setSelectedTab(newValue);
+  };
 
   const renderPleaseLoginTemplate = () => {
     return (
@@ -41,10 +45,10 @@ const Home = () => {
             {loading && (
               <Box
                 sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  minHeight: '50vh'
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  minHeight: "50vh",
                 }}
               >
                 <Loading />
@@ -52,18 +56,17 @@ const Home = () => {
             )}
             {!loading && (
               <div>
-                <Box sx={{ width: "100%", typography: "div", textAlign: "center", border: 1, borderColor: 'divider', padding: 2 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 'bold', borderBottom: 1, borderColor: 'divider', paddingBottom: 2 }} gutterBottom>
-                    New Questions
-                  </Typography>
-                  <QuestionList showAnswered={false} />
-                </Box>
-                <Box sx={{ width: "100%", typography: "div", textAlign: "center", border: 1, borderColor: 'divider', padding: 2, marginTop: 4 }}>
-                  <Typography variant="h5" sx={{ fontWeight: 'bold', borderBottom: 1, borderColor: 'divider', paddingBottom: 2 }} gutterBottom>
-                    Done
-                  </Typography>
-                  <QuestionList showAnswered={true} />
-                </Box>
+                <Tabs value={selectedTab} onChange={handleTabChange}>
+                  <Tab label="Unanswered Questions" />
+                  <Tab label="Answered Questions" />
+                </Tabs>
+                <div style={{ marginTop: "1rem" }}>
+                  {selectedTab === 0 ? (
+                    <QuestionList showAnswered={false} />
+                  ) : (
+                    <QuestionList showAnswered={true} />
+                  )}
+                </div>
               </div>
             )}
           </div>

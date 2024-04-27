@@ -10,12 +10,15 @@ const PrivateRoute: FC<PrivateRouteProps> = ({
   isLoggedIn,
   children,
 }: PrivateRouteProps) => {
-
   const redirectUrl = window.location.href
     .toString()
     .split(window.location.host)[1];
 
-  return isLoggedIn ? children : <Navigate to={`${redirectUrl}`} replace />;
+  return isLoggedIn ? (
+    children
+  ) : (
+    <Navigate to={`/login?redirect=${redirectUrl}`} replace />
+  );
 };
 
 export default PrivateRoute;
